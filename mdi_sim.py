@@ -7,6 +7,9 @@ import simpy as sim
 # Parameters
 
 METEOR_INTERVAL_SETTING = 30
+STAR_GRAVITY_WELL_ZONE = 12.066600000000003
+STAR_GRAVITY_WELL_STAR = 18.564
+DEEP_SPACE = False
 MDI_COUNT = 24
 EVENT_HORIZON = 60000
 
@@ -17,6 +20,15 @@ MDI_FIRING_INTERVAL = 30 / 3600
 MDI_HIT_CHANCE = 0.8
 MDI_RECHARGE_TIME = 20 / 9
 
+# Meteor interval modifiers
+
+STAR_GRAVITY_MODIFIER = (
+  (DEEP_SPACE is False)
+  and min(1, (STAR_GRAVITY_WELL_ZONE / STAR_GRAVITY_WELL_STAR) * 1.5)
+  or 0
+)
+METEOR_INTERVAL_MODIFIER = 1 + (1 - STAR_GRAVITY_MODIFIER) * 3
+
 df_schema = {
   "id": pl.UInt16,
   "time": pl.Float32,
@@ -25,6 +37,7 @@ df_schema = {
   "shot_fired": pl.UInt16,
   "meteor_shot": pl.UInt16,
 }
+
 
 class Mdi:
   def __init__(self, id: int, env: sim.Environment, ready_store: sim.Store) -> None:
@@ -84,7 +97,7 @@ def mdi_proc(
 
 def meteor_proc(env: sim.Environment, meteor_store: sim.Store):
   while True:
-    yield env.timeout(random.uniform(1, METEOR_INTERVAL_SETTING))
+    yield env.timeout(1 + METEOR_INTERVAL_MODIFIER * random.random() * METEOR_INTERVAL_SETTING)
     meteor_count = math.floor(math.log(1 / (1 - random.random()), 2)) + 1
     yield meteor_store.put(meteor_count)
 

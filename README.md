@@ -1,6 +1,6 @@
 # Factorio: Space Exploration meteor defense simulation
 
-This is a Python SimPy code to simulate meteor defense in Factorio: Space Exploration mod (0.6.104).
+This is a Python SimPy code to simulate meteor defense in Factorio: Space Exploration mod (0.6.125).
 
 ## Instruction
 
@@ -15,9 +15,20 @@ This is a Python SimPy code to simulate meteor defense in Factorio: Space Explor
 * Incorporate star gravity into the formula for next meteor strike:
 
     ```
-    modifier_gravity = min(1, Gravity well zone / Gravity well star * 1.5)
+    modifier_gravity = min(1, (Star gravity well zone / Star gravity well star) * 1.5)
 
     upper_limit_modifier = 1 + (1 - modifier_gravity) * 3
 
     actual_meteor_interval = 1 + upper_limit_modifier * random.random() * meteor_interval_upper_limit
+    ```
+
+    ```
+    Nauvis
+    star_gravity_well_zone = 12.066600000000003
+    star_gravity_well_star = 18.564
+    ```
+
+    ```
+    /c log(serpent.block(remote.call("space-exploration", "get_zone_from_name", {zone_name = "Nauvis"})))
+    /c log(serpent.block(remote.call("space-exploration", "get_zone_from_name", {zone_name = "Calidus"})))
     ```
