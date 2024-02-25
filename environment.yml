@@ -1,0 +1,9 @@
+name: factorio-se-meteor-sim
+channels:
+  - conda-forge
+dependencies:
+  - ipykernel
+  - numpy
+  - polars
+  - python
+  - simpy
